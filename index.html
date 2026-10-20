@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>6‑2 Rotation Lab</title>
+<style>
+:root{--bg:#f3efe6;--card:#fff;--ink:#1c2333;--mut:#667086;--ln:#e0dbce;--S:#f2a900;--OH:#2f6fed;--MB:#1f9d6b;--OPP:#e2495a;--L:#8a5cf6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121620;--card:#1b2130;--ink:#eef0f6;--mut:#9aa2b6;--ln:#2c3447;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121620;--card:#1b2130;--ink:#eef0f6;--mut:#9aa2b6;--ln:#2c3447;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{max-width:1180px;margin:0 auto;padding:18px 16px 0}
+h1{margin:0;font-size:clamp(24px,4vw,34px);letter-spacing:-.02em;font-weight:800}
+header p{margin:4px 0 0;color:var(--mut);max-width:62ch}
+main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:18px;max-width:1180px;margin:0 auto;padding:16px}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:14px 16px;margin-bottom:14px}
+h3{margin:0 0 8px;font-size:16px}h3 small{color:var(--mut);font-weight:500;margin-left:6px}
+.tabs,.ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+.ctl{margin:10px 0 0}
+button,select,input{font:inherit;color:var(--ink)}
+button{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:7px 12px;cursor:pointer;font-weight:600}
+button:hover{border-color:var(--mut)}
+button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.dots{display:flex;gap:4px;margin:0 4px}.dots button{width:34px;padding:7px 0;text-align:center}
+.note{font-size:13.5px;color:var(--mut);margin:0 0 10px}
+.stage{position:relative;aspect-ratio:100/94;container-type:inline-size;border-radius:16px;overflow:hidden;background:#2d4556}
+.court{position:absolute;left:3%;top:6%;width:82%;height:82%;background:linear-gradient(180deg,#e7b266,#d49c52);border:.5cqw solid #fff}
+.court:after{content:"";position:absolute;left:0;right:0;top:33.3%;height:.6cqw;background:#fff}
+.net{position:absolute;left:3%;top:3.2%;width:82%;height:2.6%;background:repeating-linear-gradient(90deg,#fff 0 .5cqw,transparent .5cqw 2cqw),rgba(255,255,255,.25);border-bottom:.7cqw solid #fff}
+.zone{position:absolute;left:87%;top:6%;width:12%;height:82%;border:.4cqw dashed rgba(255,255,255,.4);border-radius:2cqw;color:rgba(255,255,255,.7);font-size:max(9px,2.2cqw);text-align:center;padding-top:1cqw}
+.g{position:absolute;transform:translate(-50%,-50%);width:7cqw;height:7cqw;border:.4cqw dashed rgba(255,255,255,.8);border-radius:50%;color:rgba(255,255,255,.9);display:grid;place-items:center;font-weight:800;font-size:3cqw}
+#ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.ln{stroke:#fff;stroke-width:.7;stroke-dasharray:1.6 1.2;opacity:.85}.ln.sr{stroke:#ffd25a;stroke-width:.9}.ln.f{opacity:.4}
+.chip{position:absolute;transform:translate(-50%,-50%);transition:left .8s cubic-bezier(.5,0,.2,1),top .8s cubic-bezier(.5,0,.2,1),opacity .4s;display:flex;flex-direction:column;align-items:center;width:16cqw;pointer-events:none}
+.dot{width:9.5cqw;height:9.5cqw;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:max(11px,3.3cqw);color:#fff;border:.5cqw solid #fff;box-shadow:0 .6cqw 1.6cqw rgba(0,0,0,.35)}
+.nm{margin-top:.6cqw;font-size:max(10px,2.7cqw);font-weight:700;color:#fff;background:rgba(0,0,0,.6);padding:0 1.5cqw;border-radius:99px;white-space:nowrap;max-width:16cqw;overflow:hidden;text-overflow:ellipsis}
+.chip.off{opacity:.6}
+.c-S{--c:var(--S)}.c-OH{--c:var(--OH)}.c-MB{--c:var(--MB)}.c-OPP{--c:var(--OPP)}.c-L{--c:var(--L)}
+.dot,.tg{background:var(--c)}.c-S .dot,.tg.c-S{color:#1c2333}.chip.fr .dot{background:#fff;color:#1c2333;border-color:var(--c)}
+.quiz .dot{background:#6b7385!important;color:transparent!important;border-color:#fff!important}
+.tg{display:inline-grid;place-items:center;min-width:34px;height:26px;border-radius:8px;color:#fff;font-size:12px;font-weight:800}
+.lg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:13px;color:var(--mut);margin-top:8px}
+.lg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+ul{margin:0;padding-left:18px}li{margin:5px 0}
+.tip{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:14px}
+.rw{display:grid;grid-template-columns:34px 1fr 118px;gap:6px;align-items:center;margin:6px 0}
+.rw.b{grid-template-columns:1fr 100px 34px}
+.rw small{display:block;color:var(--mut);font-size:11px;text-align:center}
+input,select{background:var(--bg);border:1px solid var(--ln);border-radius:8px;padding:7px 9px;width:100%;min-width:0}
+.sub{margin:10px 0 4px;font-size:13px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+label.ck{display:inline-flex;gap:6px;align-items:center;font-size:14px;font-weight:600;cursor:pointer}
+label.ck input{width:auto}
+</style></head><body>
+<header><h1>6‑2 Rotation Lab</h1>
+<p>Two setters, and one is always setting from the back row. Add your squad, then step through the six rotations to see who goes where.</p></header>
+<main>
+<section>
+ <div class="tabs" id="tabs"></div>
+ <p class="note" id="pn"></p>
+ <div class="stage" id="stage"><div class="net"></div><div class="court"></div><div class="zone">Off court</div>
+  <svg id="ov" viewBox="0 0 100 94"><defs>
+   <marker id="ar" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L6 3L0 6z" fill="#fff"/></marker>
+   <marker id="am" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L6 3L0 6z" fill="#ffd25a"/></marker></defs><g id="og"></g></svg></div>
+ <div class="ctl"><button id="pv" aria-label="Previous rotation">◀ Prev</button>
+  <div class="dots" id="dots"></div>
+  <button id="nx" aria-label="Next rotation">Next ▶</button>
+  <button id="au">▶ Auto</button><button id="qz">Quiz mode</button></div>
+ <div class="lg"><span><i style="background:var(--S)"></i>Setter</span><span><i style="background:var(--OH)"></i>Outside</span><span><i style="background:var(--MB)"></i>Middle</span><span><i style="background:var(--OPP)"></i>Opposite (front-row setter)</span><span><i style="background:var(--L)"></i>Libero</span><span>○ front row · ● back row (like your chart)</span></div>
+</section>
+<aside>
+ <div class="card" id="teach"></div>
+ <div class="card" id="roster"></div>
+</aside>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const ROLES=['S','OH','MB','S','OH','MB'],AB={S:'S',OH:'OH',MB:'MB',OPP:'OPP',L:'L'};
+const FULL={S:'Setter',OH:'Outside',MB:'Middle',OPP:'Opposite',L:'Libero'};
+const SPOT={1:[84,76],2:[84,20],3:[50,20],4:[16,20],5:[16,76],6:[50,76]};
+const REC={1:[82,60],2:[88,16],3:[46,16],4:[12,22],5:[18,62],6:[50,70]};
+const SREC={1:[74,24],6:[66,24],5:[36,28]};
+const PH=['1 · Base','2 · Serve receive','3 · Defense: ball right','4 · Defense: ball middle','5 · Defense: ball left','6 · Attack'];
+const CODE0=['S1','O2','M1','S2','O1','M2'];
+const PHT2=[
+`Base: the rotation order when we serve. Open circles are front row, filled circles are back row. Dashed arrows show the next rotation (2→1→6→5→4→3→2).`,
+`Serve receive, straight from your chart. The back-row setter (S) hides near the net while Outsides, Middles and the libero pass. R is the front-row setter, hitting right side.`,
+`Defense with the attack coming at our right side: Middle and R go up to block there, the Outside stays off the net, and the back row covers the perimeter.`,
+`Defense with a middle attack: the Middle blocks alone, the Outside and R stay off the net on either side, and the back row forms a triangle behind.`,
+`Defense with the attack coming at our left side: Outside and Middle block together, R stays off the net, and the back row rotates to cover.`,
+`After the pass everyone is free to move. The back-row setter penetrates to the target (right of center) and sets the front row: Outside left, Middle center, Opposite right.`];
+/* chart formations per rotation: [serve receive, defense ball right, middle, left], each = x,y for idx0..5 (S1/R2, O2, M1, R1/S2, O1, M2) */
+const CH=[
+[[89,84,80,68,28,11,13,26,20,68,52,68],[89,53,28,24,68,5,89,5,26,60,53,86],[75,62,17,31,44,11,73,33,24,62,56,83],[81,64,7,10,25,10,65,31,14,62,57,84]],
+[[66,43,84,78,80,11,57,24,19,70,51,78],[92,49,19,59,66,4,90,4,15,22,50,85],[72,61,28,61,45,6,77,29,14,29,52,85],[83,66,9,57,26,10,79,27,6,10,58,80]],
+[[40,41,57,63,87,63,83,16,24,63,21,19],[86,45,32,54,58,80,86,4,27,30,65,4],[71,49,29,49,55,78,80,21,13,19,45,9],[74,49,5,53,52,76,68,24,3,5,24,5]],
+[[13,36,19,75,52,75,90,80,79,62,34,11],[95,4,22,51,47,73,87,50,16,28,72,4],[80,27,21,56,56,74,81,56,13,28,44,7],[73,27,11,56,55,75,74,54,6,4,28,4]],
+[[73,20,17,66,50,78,55,39,85,78,87,10],[95,4,20,33,48,75,88,52,26,55,74,4],[82,25,21,28,58,73,83,57,22,59,47,4],[80,25,13,3,58,73,74,52,14,55,33,3]],
+[[90,13,21,72,16,19,40,37,52,81,83,81],[92,6,18,26,68,6,93,42,20,52,45,72],[78,21,27,23,50,4,88,42,30,48,66,67],[75,26,8,5,28,5,78,40,12,38,60,65]]];
+const PHT=[
+`Positions run clockwise. After we win a rally off their serve, everyone rotates: 2→1 (serve), 1→6, 6→5, 5→4, 4→3, 3→2. Dashed arrows show the next move.`,
+`When the ball is served you must stay legal: each back-row player behind the front-row player they line up with, and left-to-right order held. The back-row setter hides near the target while Outsides and the libero pass.`,
+`After the pass everyone is free to move. The back-row setter penetrates to the target (right of center) and sets the front row: Outside left, Middle center, Opposite right.`];
+const TIPS={1:`Setter serves, then releases straight to the target. The shortest run, so a great first rotation to learn.`,6:`Setter starts mid-back and slides right to the target. Watch the overlap with the back-right player.`,5:`Setter starts left-back, the longest run to the target. Stay left of the back-middle until the serve is hit.`};
+const DEF=()=>({r:0,ph:0,quiz:false,lib:true,subs:0,nid:10,
+ P:{a:{n:'Lucas',t:'S'},b:{n:'Owen',t:'OH'},c:{n:'Lachie',t:'MB'},d:{n:'Thien',t:'S'},e:{n:'Kingston',t:'OH'},f:{n:'Riley',t:'MB'},g:{n:'Kayden',t:'L'},h:{n:'Tony',t:'OH'}},
+ court:['a','b','c','d','e','f'],L:'g',bench:['h']});
+let S=DEF();
+try{const s=JSON.parse(localStorage.getItem('vb62c')||'null');if(s&&s.court&&s.P)S=Object.assign(DEF(),s)}catch(e){}
+const save=()=>{try{localStorage.setItem('vb62c',JSON.stringify(S))}catch(e){}};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const slot=i=>((i-S.r)%6+6)%6+1;
+
+function info(i){
+ const sl=slot(i),fr=sl>=2&&sl<=4,b=ROLES[i];let x,y;
+ if(S.ph===0){[x,y]=SPOT[sl]}
+ else if(S.ph<5){const F=CH[S.r][S.ph-1];[x,y]=[F[2*i],F[2*i+1]]}
+ else if(fr){[x,y]=b==='S'?[90,12]:b==='OH'?[12,12]:[46,12]}
+ else{[x,y]=b==='S'?[70,13]:b==='OH'?[20,68]:[50,76]}
+ return{sl,fr,b,x,y,code:b==='S'?(fr?(i?'R1':'R2'):(i?'S2':'S1')):['','O2','M1','','O1','M2'][i],role:b==='S'&&fr?'OPP':b,libIn:!!(S.lib&&S.L&&b==='MB'&&!fr&&!(S.ph===0&&sl===1))};
+}
+const chips={};
+function place(id,o,role,off,oy,tag,lab){
+ let e=chips[id];
+ if(!e){e=chips[id]=document.createElement('div');e.innerHTML='<div class="dot"></div><div class="nm"></div>';$('#stage').appendChild(e)}
+ e.style.left=(off?94:3+o.x*.82)+'%';e.style.top=(off?oy:6+o.y*.82)+'%';
+ e.className='chip c-'+role+(o.fr&&!off?' fr':'')+(off?' off':'');
+ e.firstChild.textContent=lab||o.code;e.lastChild.textContent=S.P[id].n+(tag||'');
+}
+function render(){
+ const live=new Set(),I=[0,1,2,3,4,5].map(info);
+ I.forEach((o,i)=>{const id=S.court[i];live.add(id);
+  place(id,o,o.role,o.libIn,68,(S.ph===0&&o.sl===1)?' 🏐':'')});
+ if(S.lib&&S.L){live.add(S.L);const k=I.find(o=>o.libIn);place(S.L,k||{x:0,y:0},'L',!k,44,'','L')}
+ Object.keys(chips).forEach(id=>{if(!live.has(id)){chips[id].remove();delete chips[id]}});
+ $('#stage').classList.toggle('quiz',S.quiz);
+ $('#qz').classList.toggle('on',S.quiz);$('#qz').textContent=S.quiz?'Reveal roles':'Quiz mode';
+ [...$('#tabs').children].forEach((b,k)=>b.classList.toggle('on',k===S.ph));
+ [...$('#dots').children].forEach((b,k)=>b.classList.toggle('on',k===S.r));
+ $('#pn').textContent=PHT2[S.ph];
+ overlay(I);teach(I);save();
+}
+function overlay(I){
+ const X=x=>3+x*.82,Y=y=>(6+y*.82)*.94;let h='';
+ const ln=(a,b,c,d,cl,m)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" class="ln ${cl}" marker-end="url(#${m})"/>`;
+ if(S.ph===0){const o=[2,1,6,5,4,3];
+  o.forEach((a,k)=>{const A=SPOT[a],B=SPOT[o[(k+1)%6]],p=t=>[X(A[0]+(B[0]-A[0])*t),Y(A[1]+(B[1]-A[1])*t)],u=p(.3),v=p(.7);h+=ln(u[0],u[1],v[0],v[1],'','ar')})}
+ else if(S.ph>1&&S.ph<5){const bx=[88,50,12][S.ph-2];h+=`<text x="${X(bx)}" y="5.2" font-size="6" text-anchor="middle">🏐</text>`}
+ else{const s=I.find(o=>o.b==='S'&&!o.fr),A=SPOT[s.sl];
+  h+=ln(X(A[0]),Y(A[1]),X(s.x),Y(s.y),'sr','am');
+  if(S.ph===5)I.filter(o=>o.fr).forEach(q=>{h+=ln(X(s.x),Y(s.y),X(q.x),Y(q.y),'f','ar')})}
+ $('#og').innerHTML=h;
+}
+function teach(I){
+ const f=(b,fr)=>I.findIndex(o=>o.b===b&&o.fr===fr),N=i=>`<b>${esc(S.P[S.court[i]].n)}</b>`;
+ const bs=f('S',false),fs=f('S',true),fo=f('OH',true),fm=f('MB',true),bo=f('OH',false),bm=f('MB',false),sv=I.findIndex(o=>o.sl===1);
+ const L=S.lib&&S.L?`<b>${esc(S.P[S.L].n)}</b>`:'',mbServes=I[sv].b==='MB'&&L;
+ $('#teach').innerHTML=`<h3>Rotation ${S.r+1}<small>of 6</small></h3><ul>
+ <li><b>Setter:</b> ${N(bs)} is in the back row (position ${I[bs].sl}), so ${N(bs)} runs to the target at the net and sets.</li>
+ <li><b>Opposite:</b> ${N(fs)} is the other setter, but up front, so they hit from the right side.</li>
+ <li><b>Front row:</b> ${N(fo)} (Outside) hits left, ${N(fm)} (Middle) hits and blocks center.</li>
+ <li><b>Back row:</b> ${N(bo)} (Outside) plays left-back${L?`, and ${L} (Libero) covers for ${N(bm)}`:`, ${N(bm)} (Middle) plays back-middle`}.</li>
+ <li><b>Serving:</b> ${N(sv)} serves from position 1${mbServes?`. The libero can’t serve here, so ${N(sv)} serves first and ${L} swaps in right after`:''}.</li></ul>
+ <div class="tip">💡 ${TIPS[I[bs].sl]}</div>`;
+}
+function roster(){
+ const bo=S.bench.map(b=>`<option value="${b}">${esc(S.P[b].n)} (${AB[S.P[b].t]})</option>`).join('');
+ const row=(id,tag,lab,k)=>`<div class="rw"><span class="tg c-${tag}">${CODE0[k]||tag}</span><input data-n="${id}" value="${esc(S.P[id].n)}" aria-label="${lab}"><select data-sub="${k}" aria-label="Sub for ${lab}"><option value="">Sub out…</option>${bo}</select></div>`;
+ const ro=(v)=>['S','OH','MB','OPP','L'].map(r=>`<option value="${r}"${r===v?' selected':''}>${FULL[r]}</option>`).join('');
+ $('#roster').innerHTML=`<h3>Roster<small>subs used: ${S.subs}</small></h3>
+ <div class="sub">On court (start positions 1–6)</div>
+ ${S.court.map((id,i)=>row(id,ROLES[i],'Start position '+(i+1),i)).join('')}
+ <div class="sub">Libero</div>${row(S.L,'L','Libero','L')}
+ <label class="ck" style="margin-top:6px"><input type="checkbox" id="lb"${S.lib?' checked':''}>Libero replaces the back-row middle</label>
+ <div class="sub">Bench</div>
+ ${S.bench.map(id=>`<div class="rw b"><input data-n="${id}" value="${esc(S.P[id].n)}" aria-label="Bench player"><select data-t="${id}">${ro(S.P[id].t)}</select><button data-rm="${id}" aria-label="Remove">✕</button></div>`).join('')||'<p class="note">No one on the bench yet.</p>'}
+ <div class="rw b"><input id="nn" placeholder="New player name"><select id="nt">${ro('OH')}</select><button id="add" aria-label="Add">＋</button></div>
+ <div class="ctl"><button id="rs">Reset to defaults</button></div>`;
+}
+$('#roster').addEventListener('input',e=>{const id=e.target.dataset.n;if(id){S.P[id].n=e.target.value||'?';render()}});
+$('#roster').addEventListener('change',e=>{const t=e.target,d=t.dataset;
+ if(t.id==='lb'){S.lib=t.checked;render()}
+ else if(d.sub!==undefined&&t.value){const b=S.bench.indexOf(t.value);
+  if(d.sub==='L'){const o=S.L;S.L=t.value;S.bench[b]=o}else{const o=S.court[d.sub];S.court[d.sub]=t.value;S.bench[b]=o;S.subs++}
+  roster();render()}
+ else if(d.t){S.P[d.t].t=t.value;roster();save()}});
+$('#roster').addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.rm){S.bench=S.bench.filter(x=>x!==t.dataset.rm);delete S.P[t.dataset.rm];roster();save()}
+ else if(t.id==='add'){const n=$('#nn').value.trim();if(!n)return;const id='p'+S.nid++;S.P[id]={n,t:$('#nt').value};S.bench.push(id);roster();save()}
+ else if(t.id==='rs'){S=DEF();roster();render()}});
+$('#tabs').innerHTML=PH.map((p,k)=>`<button data-p="${k}">${p}</button>`).join('');
+$('#tabs').onclick=e=>{const k=e.target.dataset.p;if(k!==undefined){S.ph=+k;render()}};
+$('#dots').innerHTML=[0,1,2,3,4,5].map(k=>`<button data-r="${k}" aria-label="Rotation ${k+1}">${k+1}</button>`).join('');
+$('#dots').onclick=e=>{const k=e.target.dataset.r;if(k!==undefined){S.r=+k;render()}};
+const step=d=>{S.r=(S.r+d+6)%6;render()};
+$('#nx').onclick=()=>step(1);$('#pv').onclick=()=>step(-1);
+$('#qz').onclick=()=>{S.quiz=!S.quiz;render()};
+let tm=null;
+$('#au').onclick=()=>{if(tm){clearInterval(tm);tm=null;$('#au').textContent='▶ Auto';return}
+ $('#au').textContent='⏸ Pause';
+ tm=setInterval(()=>{if(S.ph<5)S.ph++;else{S.ph=0;S.r=(S.r+1)%6}render()},2200)};
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT/.test(e.target.tagName))return;
+ if(e.key==='ArrowRight')step(1);else if(e.key==='ArrowLeft')step(-1);
+ else if('123456'.includes(e.key)&&e.key){S.ph=+e.key-1;render()}});
+[1,2,3,4,5,6].forEach(n=>{const g=document.createElement('div'),p=SPOT[n];g.className='g';g.textContent=n;
+ g.style.left=(3+p[0]*.82)+'%';g.style.top=(6+p[1]*.82)+'%';$('#stage').insertBefore(g,$('#ov'))});
+roster();render();
+</script></body></html>
