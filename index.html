@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>6‑2 Rotation Lab</title>
+<title>5‑1 Rotation Lab</title>
 <style>
 :root{--bg:#f3efe6;--card:#fff;--ink:#1c2333;--mut:#667086;--ln:#e0dbce;--S:#f2a900;--OH:#2f6fed;--MB:#1f9d6b;--OPP:#e2495a;--L:#8a5cf6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121620;--card:#1b2130;--ink:#eef0f6;--mut:#9aa2b6;--ln:#2c3447;color-scheme:dark}}
@@ -52,8 +52,8 @@ input,select{background:var(--bg);border:1px solid var(--ln);border-radius:8px;p
 label.ck{display:inline-flex;gap:6px;align-items:center;font-size:14px;font-weight:600;cursor:pointer}
 label.ck input{width:auto}
 </style></head><body>
-<header><h1>6‑2 Rotation Lab</h1>
-<p>Two setters, and one is always setting from the back row. Add your squad, then step through the six rotations to see who goes where.</p></header>
+<header><h1>5‑1 Rotation Lab</h1>
+<p>One setter runs the offense in every rotation, with the Opposite across from them. Add your squad, then step through the six rotations to see who goes where.</p></header>
 <main>
 <section>
  <div class="tabs" id="tabs"></div>
@@ -66,7 +66,7 @@ label.ck input{width:auto}
   <div class="dots" id="dots"></div>
   <button id="nx" aria-label="Next rotation">Next ▶</button>
   <button id="au">▶ Auto</button><button id="qz">Quiz mode</button></div>
- <div class="lg"><span><i style="background:var(--S)"></i>Setter</span><span><i style="background:var(--OH)"></i>Outside</span><span><i style="background:var(--MB)"></i>Middle</span><span><i style="background:var(--OPP)"></i>Opposite (front-row setter)</span><span><i style="background:var(--L)"></i>Libero</span><span>○ front row · ● back row (like your chart)</span></div>
+ <div class="lg"><span><i style="background:var(--S)"></i>Setter</span><span><i style="background:var(--OH)"></i>Outside</span><span><i style="background:var(--MB)"></i>Middle</span><span><i style="background:var(--OPP)"></i>Opposite</span><span><i style="background:var(--L)"></i>Libero</span><span>○ front row · ● back row (like your chart)</span></div>
 </section>
 <aside>
  <div class="card" id="teach"></div>
@@ -75,39 +75,39 @@ label.ck input{width:auto}
 </main>
 <script>
 const $=s=>document.querySelector(s);
-const ROLES=['S','OH','MB','S','OH','MB'],AB={S:'S',OH:'OH',MB:'MB',OPP:'OPP',L:'L'};
+const ROLES=['S','OH','MB','OPP','OH','MB'],AB={S:'S',OH:'OH',MB:'MB',OPP:'OPP',L:'L'};
 const FULL={S:'Setter',OH:'Outside',MB:'Middle',OPP:'Opposite',L:'Libero'};
 const SPOT={1:[84,76],2:[84,20],3:[50,20],4:[16,20],5:[16,76],6:[50,76]};
 const REC={1:[82,60],2:[88,16],3:[46,16],4:[12,22],5:[18,62],6:[50,70]};
 const SREC={1:[74,24],6:[66,24],5:[36,28]};
 const PH=['1 · Base','2 · Serve receive','3 · Defense: ball right','4 · Defense: ball middle','5 · Defense: ball left','6 · Attack'];
-const CODE0=['S1','O2','M1','S2','O1','M2'];
+const CODE0=['S','O2','M1','R','O1','M2'];
 const PHT2=[
 `Base: the rotation order when we serve. Open circles are front row, filled circles are back row. Dashed arrows show the next rotation (2→1→6→5→4→3→2).`,
-`Serve receive, straight from your chart. The back-row setter (S) hides near the net while Outsides, Middles and the libero pass. R is the front-row setter, hitting right side.`,
+`Serve receive, from your chart. A back-row setter (S) hides near the net, a front-row setter stays up at the net, and the Outsides, libero and the Opposite (R) all pass.`,
 `Defense with the attack coming at our right side: Middle and R go up to block there, the Outside stays off the net, and the back row covers the perimeter.`,
 `Defense with a middle attack: the Middle blocks alone, the Outside and R stay off the net on either side, and the back row forms a triangle behind.`,
 `Defense with the attack coming at our left side: Outside and Middle block together, R stays off the net, and the back row rotates to cover.`,
 `After the pass everyone is free to move. The back-row setter penetrates to the target (right of center) and sets the front row: Outside left, Middle center, Opposite right.`];
 /* chart formations per rotation: [serve receive, defense ball right, middle, left], each = x,y for idx0..5 (S1/R2, O2, M1, R1/S2, O1, M2) */
 const CH=[
-[[89,84,80,68,28,11,13,26,20,68,52,68],[89,53,28,24,68,5,89,5,26,60,53,86],[75,62,17,31,44,11,73,33,24,62,56,83],[81,64,7,10,25,10,65,31,14,62,57,84]],
-[[66,43,84,78,80,11,57,24,19,70,51,78],[92,49,19,59,66,4,90,4,15,22,50,85],[72,61,28,61,45,6,77,29,14,29,52,85],[83,66,9,57,26,10,79,27,6,10,58,80]],
-[[40,41,57,63,87,63,83,16,24,63,21,19],[86,45,32,54,58,80,86,4,27,30,65,4],[71,49,29,49,55,78,80,21,13,19,45,9],[74,49,5,53,52,76,68,24,3,5,24,5]],
-[[13,36,19,75,52,75,90,80,79,62,34,11],[95,4,22,51,47,73,87,50,16,28,72,4],[80,27,21,56,56,74,81,56,13,28,44,7],[73,27,11,56,55,75,74,54,6,4,28,4]],
-[[73,20,17,66,50,78,55,39,85,78,87,10],[95,4,20,33,48,75,88,52,26,55,74,4],[82,25,21,28,58,73,83,57,22,59,47,4],[80,25,13,3,58,73,74,52,14,55,33,3]],
-[[90,13,21,72,16,19,40,37,52,81,83,81],[92,6,18,26,68,6,93,42,20,52,45,72],[78,21,27,23,50,4,88,42,30,48,66,67],[75,26,8,5,28,5,78,40,12,38,60,65]]];
+[[89,84,80,68,28,11,14,44,20,68,52,68],[89,53,28,24,68,5,89,5,26,60,53,86],[75,62,17,31,44,11,73,33,24,62,56,83],[81,64,7,10,25,10,65,31,14,62,57,84]],
+[[66,43,84,78,80,11,42,38,19,70,51,78],[92,49,19,59,66,4,90,4,15,22,50,85],[72,61,28,61,45,6,77,29,14,29,52,85],[83,66,9,57,26,10,79,27,6,10,58,80]],
+[[40,41,57,63,87,63,80,40,24,63,21,19],[86,45,32,54,58,80,86,4,27,30,65,4],[71,49,29,49,55,78,80,21,13,19,45,9],[74,49,5,53,52,76,68,24,3,5,24,5]],
+[[13,36,19,75,52,75,85,74,79,62,34,11],[95,4,22,51,47,73,87,50,16,28,72,4],[80,27,21,56,56,74,81,56,13,28,44,7],[73,27,11,56,55,75,74,54,6,4,28,4]],
+[[73,20,17,66,50,78,67,62,85,78,87,10],[95,4,20,33,48,75,88,52,26,55,74,4],[82,25,21,28,58,73,83,57,22,59,47,4],[80,25,13,3,58,73,74,52,14,55,33,3]],
+[[90,13,21,72,16,19,36,58,52,81,83,81],[92,6,18,26,68,6,93,42,20,52,45,72],[78,21,27,23,50,4,88,42,30,48,66,67],[75,26,8,5,28,5,78,40,12,38,60,65]]];
 const PHT=[
 `Positions run clockwise. After we win a rally off their serve, everyone rotates: 2→1 (serve), 1→6, 6→5, 5→4, 4→3, 3→2. Dashed arrows show the next move.`,
 `When the ball is served you must stay legal: each back-row player behind the front-row player they line up with, and left-to-right order held. The back-row setter hides near the target while Outsides and the libero pass.`,
 `After the pass everyone is free to move. The back-row setter penetrates to the target (right of center) and sets the front row: Outside left, Middle center, Opposite right.`];
-const TIPS={1:`Setter serves, then releases straight to the target. The shortest run, so a great first rotation to learn.`,6:`Setter starts mid-back and slides right to the target. Watch the overlap with the back-right player.`,5:`Setter starts left-back, the longest run to the target. Stay left of the back-middle until the serve is hit.`};
+const TIPS={4:`Setter is front-left, so only two hitters are up front (Outside and Middle). The Opposite is in the back row: set them a back-row ball.`,3:`Setter is front-middle and slides right to the target. Only two front-row hitters, so the Opposite attacks from behind the 3-metre line.`,2:`Setter is front-right, already at the target, so no run is needed. Only two front-row hitters this rotation.`,1:`Setter serves, then releases straight to the target. The shortest run, so a great first rotation to learn.`,6:`Setter starts mid-back and slides right to the target. Watch the overlap with the back-right player.`,5:`Setter starts left-back, the longest run to the target. Stay left of the back-middle until the serve is hit.`};
 const DEF=()=>({r:0,ph:0,quiz:false,lib:true,subs:0,nid:10,
- P:{a:{n:'Lucas',t:'S'},b:{n:'Owen',t:'OH'},c:{n:'Lachie',t:'MB'},d:{n:'Thien',t:'S'},e:{n:'Kingston',t:'OH'},f:{n:'Riley',t:'MB'},g:{n:'Kayden',t:'L'},h:{n:'Tony',t:'OH'}},
+ P:{a:{n:'Lucas',t:'S'},b:{n:'Thien',t:'OH'},c:{n:'Riley',t:'MB'},d:{n:'Owen',t:'OPP'},e:{n:'Kingston',t:'OH'},f:{n:'Lachie',t:'MB'},g:{n:'Kayden',t:'L'},h:{n:'Tony',t:'MB'}},
  court:['a','b','c','d','e','f'],L:'g',bench:['h']});
 let S=DEF();
-try{const s=JSON.parse(localStorage.getItem('vb62c')||'null');if(s&&s.court&&s.P)S=Object.assign(DEF(),s)}catch(e){}
-const save=()=>{try{localStorage.setItem('vb62c',JSON.stringify(S))}catch(e){}};
+try{const s=JSON.parse(localStorage.getItem('vb51b')||'null');if(s&&s.court&&s.P)S=Object.assign(DEF(),s)}catch(e){}
+const save=()=>{try{localStorage.setItem('vb51b',JSON.stringify(S))}catch(e){}};
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const slot=i=>((i-S.r)%6+6)%6+1;
 
@@ -115,9 +115,9 @@ function info(i){
  const sl=slot(i),fr=sl>=2&&sl<=4,b=ROLES[i];let x,y;
  if(S.ph===0){[x,y]=SPOT[sl]}
  else if(S.ph<5){const F=CH[S.r][S.ph-1];[x,y]=[F[2*i],F[2*i+1]]}
- else if(fr){[x,y]=b==='S'?[90,12]:b==='OH'?[12,12]:[46,12]}
- else{[x,y]=b==='S'?[70,13]:b==='OH'?[20,68]:[50,76]}
- return{sl,fr,b,x,y,code:b==='S'?(fr?(i?'R1':'R2'):(i?'S2':'S1')):['','O2','M1','','O1','M2'][i],role:b==='S'&&fr?'OPP':b,libIn:!!(S.lib&&S.L&&b==='MB'&&!fr&&!(S.ph===0&&sl===1))};
+ else if(fr){[x,y]=b==='S'?[72,11]:b==='OPP'?[90,12]:b==='OH'?[12,12]:[46,12]}
+ else{[x,y]=b==='S'?[70,13]:b==='OPP'?[84,70]:b==='OH'?[20,68]:[50,76]}
+ return{sl,fr,b,x,y,code:['S','O2','M1','R','O1','M2'][i],role:b,libIn:!!(S.lib&&S.L&&b==='MB'&&!fr&&!(S.ph===0&&sl===1))};
 }
 const chips={};
 function place(id,o,role,off,oy,tag,lab){
@@ -146,18 +146,18 @@ function overlay(I){
  if(S.ph===0){const o=[2,1,6,5,4,3];
   o.forEach((a,k)=>{const A=SPOT[a],B=SPOT[o[(k+1)%6]],p=t=>[X(A[0]+(B[0]-A[0])*t),Y(A[1]+(B[1]-A[1])*t)],u=p(.3),v=p(.7);h+=ln(u[0],u[1],v[0],v[1],'','ar')})}
  else if(S.ph>1&&S.ph<5){const bx=[88,50,12][S.ph-2];h+=`<text x="${X(bx)}" y="5.2" font-size="6" text-anchor="middle">🏐</text>`}
- else{const s=I.find(o=>o.b==='S'&&!o.fr),A=SPOT[s.sl];
+ else{const s=I.find(o=>o.b==='S'),A=SPOT[s.sl];
   h+=ln(X(A[0]),Y(A[1]),X(s.x),Y(s.y),'sr','am');
-  if(S.ph===5)I.filter(o=>o.fr).forEach(q=>{h+=ln(X(s.x),Y(s.y),X(q.x),Y(q.y),'f','ar')})}
+  if(S.ph===5)I.filter(o=>o.fr&&o.b!=='S').forEach(q=>{h+=ln(X(s.x),Y(s.y),X(q.x),Y(q.y),'f','ar')})}
  $('#og').innerHTML=h;
 }
 function teach(I){
  const f=(b,fr)=>I.findIndex(o=>o.b===b&&o.fr===fr),N=i=>`<b>${esc(S.P[S.court[i]].n)}</b>`;
- const bs=f('S',false),fs=f('S',true),fo=f('OH',true),fm=f('MB',true),bo=f('OH',false),bm=f('MB',false),sv=I.findIndex(o=>o.sl===1);
+ const bs=I.findIndex(o=>o.b==='S'),fs=I.findIndex(o=>o.b==='OPP'),fo=f('OH',true),fm=f('MB',true),bo=f('OH',false),bm=f('MB',false),sv=I.findIndex(o=>o.sl===1);
  const L=S.lib&&S.L?`<b>${esc(S.P[S.L].n)}</b>`:'',mbServes=I[sv].b==='MB'&&L;
  $('#teach').innerHTML=`<h3>Rotation ${S.r+1}<small>of 6</small></h3><ul>
- <li><b>Setter:</b> ${N(bs)} is in the back row (position ${I[bs].sl}), so ${N(bs)} runs to the target at the net and sets.</li>
- <li><b>Opposite:</b> ${N(fs)} is the other setter, but up front, so they hit from the right side.</li>
+ <li><b>Setter:</b> ${N(bs)} sets every ball. They’re in the ${I[bs].fr?'front row (position '+I[bs].sl+'), so only two other hitters are up front':'back row (position '+I[bs].sl+'), so they run up to the target'}.</li>
+ <li><b>Opposite:</b> ${N(fs)} ${I[fs].fr?'is up front and hits right side':'is in the back row, so attack from behind the 3-metre line or cover'}.</li>
  <li><b>Front row:</b> ${N(fo)} (Outside) hits left, ${N(fm)} (Middle) hits and blocks center.</li>
  <li><b>Back row:</b> ${N(bo)} (Outside) plays left-back${L?`, and ${L} (Libero) covers for ${N(bm)}`:`, ${N(bm)} (Middle) plays back-middle`}.</li>
  <li><b>Serving:</b> ${N(sv)} serves from position 1${mbServes?`. The libero can’t serve here, so ${N(sv)} serves first and ${L} swaps in right after`:''}.</li></ul>
